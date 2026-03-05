@@ -14,6 +14,22 @@ $headerFooterBg: #1A535C;
 @import './reset';
 @import './theme';
 
+/* Skip link - visually hidden until focused */
+.skip-link {
+	position: absolute;
+	top: -100%;
+	left: 0;
+	padding: 0.75em 1.5em;
+	background: $headerFooterBg;
+	color: #fff;
+	z-index: 100;
+	font-weight: 600;
+	text-decoration: none;
+
+	&:focus {
+		top: 0;
+	}
+}
 
 a {
 	color: $linkColor;
