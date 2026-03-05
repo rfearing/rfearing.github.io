@@ -31,6 +31,13 @@ $headerFooterBg: #1A535C;
 	}
 }
 
+/* Left-align all text except the banner */
+.post,
+.post .box,
+.footer {
+	text-align: left;
+}
+
 a {
 	color: $linkColor;
 	&:hover {
