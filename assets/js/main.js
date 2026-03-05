@@ -1,127 +1,53 @@
-/*
-	Road Trip by TEMPLATED
-	templated.co @templatedco
-	Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
-*/
+/**
+ * ricardofearing.com
+ * Vanilla JS — no dependencies
+ */
+(function () {
+  'use strict';
 
-(function($) {
+  // 1. Remove is-loading class after page loads (triggers banner animation)
+  document.body.classList.add('is-loading');
+  window.addEventListener('load', function () {
+    setTimeout(function () {
+      document.body.classList.remove('is-loading');
+    }, 100);
+  });
 
-	skel.breakpoints({
-		xlarge:	'(max-width: 1680px)',
-		large:	'(max-width: 1280px)',
-		medium:	'(max-width: 980px)',
-		small:	'(max-width: 736px)',
-		xsmall:	'(max-width: 480px)'
-	});
+  // 2. Set background images from data-bg attribute
+  document.querySelectorAll('.bg-img').forEach(function (el) {
+    var bg = el.getAttribute('data-bg');
+    if (bg) {
+      el.style.backgroundImage = 'url(images/' + bg + ')';
+    }
+  });
 
-	$(function() {
+  // 3. Fade in .post sections when scrolled into view
+  var posts = document.querySelectorAll('.post');
 
-		var	$window = $(window),
-			$body = $('body'),
-			$header = $('#header'),
-			$banner = $('#banner');
+  if (posts.length && 'IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (entry) {
+          var inner = entry.target.querySelector('.inner');
+          if (!inner) return;
+          if (entry.isIntersecting) {
+            inner.classList.add('current');
+          } else {
+            inner.classList.remove('current');
+          }
+        });
+      },
+      { threshold: 0.3 }
+    );
 
-		var $height = $('#header').height();
-
-		// Disable animations/transitions until the page has loaded.
-			$body.addClass('is-loading');
-
-			$window.on('load', function() {
-				window.setTimeout(function() {
-					$body.removeClass('is-loading');
-				}, 100);
-			});
-
-		// Fix: Placeholder polyfill.
-			$('form').placeholder();
-
-		// Prioritize "important" elements on medium.
-			skel.on('+medium -medium', function() {
-				$.prioritize(
-					'.important\\28 medium\\29',
-					skel.breakpoint('medium').active
-				);
-			});
-
-		// Banner
-
-			if ($banner.length > 0) {
-
-				// IE: Height fix.
-					if (skel.vars.browser == 'ie'
-					&&	skel.vars.IEVersion > 9) {
-
-						skel.on('-small !small', function() {
-							$banner.css('height', '100vh');
-						});
-
-						skel.on('+small', function() {
-							$banner.css('height', '');
-						});
-
-					}
-
-				// More button.
-					$banner.find('.more')
-						.addClass('scrolly');
-
-			}
-
-
-		// Get BG Image
-
-			if ( $( ".bg-img" ).length ) {
-
-				$( ".bg-img" ).each(function() {
-
-					var post 	= $(this),
-						bg 		= post.data('bg');
-
-					post.css( 'background-image', 'url(images/' + bg + ')' );
-
-				});
-
-
-			}
-
-		// Posts
-
-			$( ".post" ).each( function() {
-				var p = $(this),
-					i = p.find('.inner'),
-					m = p.find('.more');
-
-				m.addClass('scrolly');
-
-				p.scrollex({
-					top: '40vh',
-					bottom: '40vh',
-					terminate: 	function() { m.removeClass('current'); i.removeClass('current'); },
-					enter: 		function() { m.addClass('current'); i.addClass('current'); },
-					leave: 		function() { m.removeClass('current'); i.removeClass('current'); }
-				});
-
-			});
-
-		// Scrolly.
-			if ( $( ".scrolly" ).length ) {
-
-				$('.scrolly').scrolly();
-			}
-
-		// Menu.
-			$('#menu')
-				.append('<a href="#menu" class="close"></a>')
-				.appendTo($body)
-				.panel({
-					delay: 500,
-					hideOnClick: true,
-					hideOnSwipe: true,
-					resetScroll: true,
-					resetForms: true,
-					side: 'right'
-				});
-
-	});
-
-})(jQuery);
+    posts.forEach(function (post) {
+      observer.observe(post);
+    });
+  } else {
+    // Fallback: just show everything
+    posts.forEach(function (post) {
+      var inner = post.querySelector('.inner');
+      if (inner) inner.classList.add('current');
+    });
+  }
+})();
